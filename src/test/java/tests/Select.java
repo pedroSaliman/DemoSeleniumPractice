@@ -6,24 +6,49 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
+
+import java.util.Locale;
 
 public class Select {
 
 
     WebDriver driver;
     @BeforeClass
-    void setup(){
-        WebDriverManager.chromedriver().setup();
-        driver=new ChromeDriver();
-        driver.get("https://the-internet.herokuapp.com/");
+    @Parameters("browser")
+
+    void setup(@Optional String browser){
+        switch (browser.toLowerCase()){
+            case "chrome":
+                WebDriverManager.chromedriver().setup();
+                driver=new ChromeDriver();
+                break;
+            case "firefox":
+                WebDriverManager.firefoxdriver().setup();
+                driver=new FirefoxDriver();
+                break;
+            case "edg":
+                WebDriverManager.edgedriver().setup();
+                driver=new EdgeDriver();
+                break;
+            default:
+                driver=null;
+                break;
+        }
 
 
 
     }
     @Test
     void test1(){
+        driver.get("https://the-internet.herokuapp.com/");
+
         WebElement link= driver.findElement(By.cssSelector("a[href='/dropdown']"));
         link.click();
 
@@ -36,7 +61,7 @@ public class Select {
         s1.selectByIndex(1);
         Assert.assertTrue(option1.isSelected());
         Assert.assertFalse(option2.isSelected());
-
+driver.quit();
 
     }
 }
